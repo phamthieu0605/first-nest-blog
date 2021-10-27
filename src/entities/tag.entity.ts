@@ -7,6 +7,8 @@ export class TagEntity extends AbstractEntity {
   @Column('simple-array')
   tagList: string[];
 
-  @ManyToOne(() => ArticleEntity, (article) => article.tags)
+  @ManyToOne(() => ArticleEntity, (article) => article.tags, {
+    onDelete: 'CASCADE',
+  })
   article: ArticleEntity;
 }

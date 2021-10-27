@@ -3,6 +3,7 @@ import {
   Column,
   BeforeInsert,
   OneToMany,
+  BeforeUpdate,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import * as bcrypt from 'bcrypt';
@@ -27,6 +28,7 @@ export class UserEntity extends AbstractEntity {
   password: string;
 
   @BeforeInsert()
+  @BeforeUpdate()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);
   }

@@ -6,7 +6,7 @@ import { UserEntity } from 'src/entities/user.entity';
 import { UpdateUserDto } from 'src/models/user.model';
 import { UserService } from './user.service';
 
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-token')
 @ApiTags('User')
 @Controller('user')
 export class UserController {

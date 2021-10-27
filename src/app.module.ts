@@ -11,6 +11,8 @@ import { join } from 'path';
 import { MailModule } from './mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
+import * as dotenv from 'dotenv';
+dotenv.config()
 
 @Module({
   imports: [

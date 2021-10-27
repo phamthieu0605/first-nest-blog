@@ -23,6 +23,7 @@ export class AuthService {
       // this.mailService.sendConfirmationEmail(credentials.email);
       return { user: { ...user.toJSON(), token } };
     } catch (err) {
+      // console.log(err)
       throw new ConflictException('Username or email has already been taken');
     }
   }

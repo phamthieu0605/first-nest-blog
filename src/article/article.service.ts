@@ -74,7 +74,7 @@ export class ArticleService {
     return { article };
   }
 
-  async deleteComment(slug: string, id: string) {
+  async deleteComment(slug: string, id: number) {
     let article = await this.articleRepo.findOne({ slug });
 
     const comment = await this.commentRepo.findOne(id);
@@ -118,7 +118,7 @@ export class ArticleService {
 
     const tags = await this.tagRepo.save(tag);
 
-    return {newArticle, tags};
+    return {newArticle, tags: tags.tagList};
   }
 
   async updateArticle(
@@ -146,9 +146,9 @@ export class ArticleService {
     }
   }
 
-  // async deleteArticle(slug: string) {
-  //   return await this.articleRepo.delete({ slug: slug });
-  // }
+  async deleteArticle(slug: string) {
+    return await this.articleRepo.delete({ slug: slug });
+  }
 
   slugify(title: string) {
     return (

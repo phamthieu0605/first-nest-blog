@@ -21,7 +21,10 @@ export class ArticleEntity extends AbstractEntity {
   @Column({ default: '' })
   file: string;
 
-  @ManyToOne((type) => UserEntity, (user) => user.articles, { eager: true })
+  @ManyToOne((type) => UserEntity, (user) => user.articles, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   author: UserEntity;
 

@@ -1,4 +1,4 @@
-import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCommentDto {
   @ApiProperty()
@@ -26,9 +26,7 @@ export class CreateArticleDto {
   })
   tagList: string[];
 
-  @ApiProperty({
-    type: [String],
-  })
+  @ApiProperty()
   file: any;
 }
 

@@ -2,6 +2,8 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Processor('mailsend')
 export class MailProcessor {
@@ -51,7 +53,7 @@ export class MailProcessor {
       return result;
     } catch (error) {
       this.logger.error(
-        `Failed to send confirmation email to '${job.data.user}'`,
+        `Failed to send welcome email to '${job.data.user}'`,
         error.stack,
       );
       throw error;

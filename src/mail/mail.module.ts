@@ -4,6 +4,8 @@ import { MailProcessor } from './mail.processor';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { BullModule } from '@nestjs/bull';
+import * as dotenv from 'dotenv';
+dotenv.config()
 
 @Module({
   imports: [

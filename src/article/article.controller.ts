@@ -10,7 +10,7 @@ import { UserEntity } from 'src/entities/user.entity';
 import { CreateArticleDto, CreateCommentDto, UpdateArticleDto } from 'src/models/article.model';
 import { ArticleService } from './article.service';
 
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-token')
 @ApiTags('Article')
 @Controller('articles')
 export class ArticleController {
@@ -36,12 +36,24 @@ export class ArticleController {
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Create an article' })
   @ApiBody({
-    type: CreateArticleDto,
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        description: { type: 'string' },
+        content: { type: 'string' },
+        tagList: { type: 'array' },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
     description: 'Create post',
   })
   async createArticle(
     @User() user: UserEntity,
-    @Body('article') articleData: CreateArticleDto,
+    @Body() articleData: CreateArticleDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     return await this.articleService.createArticle(user, articleData, file);
@@ -57,10 +69,11 @@ export class ArticleController {
     return await this.articleService.updateArticle(user, slug, articleData);
   }
 
-  // @Delete('/:slug')
-  // async deleteArticle(@Param() params) {
-  //   return this.articleService.deleteArticle(params.slug);
-  // }
+  @Delete('/:slug')
+  @UseGuards(AuthGuard())
+  async deleteArticle(@Param() params) {
+    return this.articleService.deleteArticle(params.slug);
+  }
 
   @Post('/:slug/comments')
   async createComment(
@@ -72,13 +85,12 @@ export class ArticleController {
 
   // Find all comments of a article
   @Get(':slug/comments')
-  async findComments(@Param('slug') slug) {
+  async findComments(@Param('slug') slug: string) {
     return await this.articleService.findComments(slug);
   }
 
   @Delete(':slug/comments/:id')
-  async deleteComment(@Param() params) {
-    const { slug, id } = params;
+  async deleteComment(@Param('slug') slug: string, @Param('id') id: number) {
     return await this.articleService.deleteComment(slug, id);
   }
 }

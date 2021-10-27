@@ -9,7 +9,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post()
-  register(@Body(ValidationPipe) credentials: RegisterDto) {
+  register(@Body() credentials: RegisterDto) {
     return this.authService.register(credentials);
   }
 
