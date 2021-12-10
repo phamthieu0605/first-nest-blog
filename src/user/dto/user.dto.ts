@@ -1,4 +1,10 @@
-import { IsEmail, IsLowercase, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsLowercase,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginDto {
@@ -40,7 +46,6 @@ export class UpdateUserDto {
   @IsOptional()
   image: string;
 }
-
 export interface AuthPayload {
   username: string;
 }

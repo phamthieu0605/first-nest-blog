@@ -1,14 +1,41 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Role } from 'src/auth/role.enum';
+import { Roles } from 'src/auth/roles.decorator';
 import { User } from 'src/auth/user.decorator';
 import { multerOptions } from 'src/config/multer.config';
 import { ArticleEntity } from 'src/entities/article.entity';
 import { CommentEntity } from 'src/entities/comment.entity';
 import { UserEntity } from 'src/entities/user.entity';
-import { CreateArticleDto, CreateCommentDto, UpdateArticleDto } from 'src/models/article.model';
+import {
+  CreateArticleDto,
+  CreateCommentDto,
+  UpdateArticleDto,
+} from 'src/article/dto/article.dto';
 import { ArticleService } from './article.service';
+import { PaginationDto } from 'src/utils/pagination.dto';
+import { PaginatedProductResultDto } from './dto/PaginatedProductResult.dto';
 
 @ApiBearerAuth('JWT-token')
 @ApiTags('Article')
@@ -16,11 +43,16 @@ import { ArticleService } from './article.service';
 export class ArticleController {
   constructor(private articleService: ArticleService) {}
 
+  // Query post
   @Get()
-  @ApiOperation({ summary: 'Get all articles' })
-  @ApiResponse({ status: 200, description: 'Return all articles.' })
-  async findAll(@Query() query) {
-    return await this.articleService.getAllArticles(query);
+  async queryArticle(@Query() paginationDto: PaginationDto) {
+    paginationDto.page = Number(paginationDto.page);
+    paginationDto.limit = Number(paginationDto.limit);
+
+    return await this.articleService.getAllArticles({
+      ...paginationDto,
+      limit: paginationDto.limit > 10 ? 10 : paginationDto.limit,
+    });
   }
 
   @Get('/:id')
@@ -31,7 +63,7 @@ export class ArticleController {
   }
 
   @Post()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file', multerOptions))
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Create an article' })
@@ -83,7 +115,6 @@ export class ArticleController {
     return await this.articleService.addComment(slug, commentData);
   }
 
-  // Find all comments of a article
   @Get(':slug/comments')
   async findComments(@Param('slug') slug: string) {
     return await this.articleService.findComments(slug);
